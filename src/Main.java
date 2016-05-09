@@ -20,8 +20,46 @@ public static final String PATH_TO_TRAINING_INSTANCES = "data/spamLabelled.dat";
 		//for each var in the testing instance, just look up the probability for that var being activated/not-activated for that class (we need to do both spam and not-spam separately) and then add that probability to the list of probabilities that we will multiply together (remember to add the probability of the class at the end too) Whichever class has the highest score wins.
 	}
 
+	//key for the probability table that is returned indexes:
+	//0: probability that the feature is activated when not spam
+	//1: probability that the feature is not activated when not spam
+	//2: probability that the feature is activated when spam
+	//3: probability that the feature is not activated when spam
+	//the ordering of the probability tables just follows the ordering of the 12 features in the spamLabelled.dat file.
 	private static double[][] generateProbabilityTables(boolean[][] trainingInstances) {
-		// TODO Auto-generated method stub
+		double[][] probabilityTable = new double[12][4];
+		//first let's sort our training instances into two groups, spam and not spam
+		ArrayList<boolean[]> spamInstances = new ArrayList<>();
+		ArrayList<boolean[]> notSpamInstances = new ArrayList<>();
+		for(boolean[] eachInstance: trainingInstances){
+			if(eachInstance[12]){
+				spamInstances.add(eachInstance);
+			}else{
+				notSpamInstances.add(eachInstance);
+			}
+
+		}
+		//now, the probability that e.g. attribute 0 is activated given that the class is non-spam is given by forming a count of all of the instances that the attribute is true for in the non spam list and then dividing by the amount of instances in the non spam list
+		for(int i = 0; i < 12; i++){
+				int attributeTrueCount = 0;
+			for(boolean[] eachInstance: notSpamInstances){
+				if(eachInstance[i]){
+					attributeTrueCount++;
+				}
+			}
+			probabilityTable[i][0] = (double)attributeTrueCount/(double)notSpamInstances.size();//iActivatedNonSpam
+
+
+
+
+
+
+			probabilityTable[i][1] = //iNotActivatedNonSpam
+			probabilityTable[i][2] = //iActivatedSpam
+			probabilityTable[i][3] = //iNotActivatedSpam
+		}
+
+
 		return null;
 	}
 
