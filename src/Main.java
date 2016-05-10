@@ -28,13 +28,13 @@ public static final String PATH_TO_TRAINING_INSTANCES = "data/spamLabelled.dat";
 		double spamProb = (double)spamCount/(double)trainingInstances.length;
 		//now we are ready to do our classification on the testing set.
 			//for each var in the testing instance, just look up the probability for that var being activated/not-activated for that class (we need to do both spam and not-spam separately) and then add that probability to the list of probabilities that we will multiply together (remember to add the probability of the class at the end too) Whichever class has the highest score wins.
-		boolean[] dummyInstance = {true, true, false, false, false, false, true, false, false, true, true, false};
+		boolean[] dummyInstance = {true, true, false, true, false, true, true, false, false, true, true, false};
 		System.out.println(classifyTestInstance(dummyInstance, probabilityTables, nonSpamProb, spamProb));
 	}
 
 	//returns the name of the class that the supplied instance seems to belong to
 	private static String classifyTestInstance(boolean[] instance, double[][] probTables, double nonSpamProb, double spamProb) {
-		
+
 		//first find the probScore that it is not spam
 		double runningTotal = 1;
 		for(int i = 0; i < 12; i++){
@@ -46,10 +46,10 @@ public static final String PATH_TO_TRAINING_INSTANCES = "data/spamLabelled.dat";
 				System.out.println("not asserted so multiplying by prob: " + probTables[i][1]);
 			}
 		}
-		you should debug this by plugging in some instance and manually checking that the probabilities that we are multiplying by are correct
+
 		runningTotal *= nonSpamProb;
 		System.out.println("so the probability that this instance is not spam is: " + runningTotal);
-		
+
 		//now find probScore that it is spam haha
 		runningTotal = 1;
 		for(int i = 0; i < 12; i++){
@@ -62,8 +62,8 @@ public static final String PATH_TO_TRAINING_INSTANCES = "data/spamLabelled.dat";
 		runningTotal *= spamProb;
 		System.out.println("so the probability that this instance is spam is: " + runningTotal);
 
-		
-		
+
+
 		return "ignant and wot";
 	}
 
@@ -87,12 +87,12 @@ public static final String PATH_TO_TRAINING_INSTANCES = "data/spamLabelled.dat";
 
 		}
 		//now, the probability that e.g. attribute 0 is activated given that the class is non-spam is given by forming a count of all of the instances that the attribute is true for in the non spam list and then dividing by the amount of instances in the non spam list
-		
-		
+
+
 		for(int i = 0; i < 12; i++){
 				int attributeTrueCount = 1;//NOTE THAT THESE ARE INITTED TO 1 TO AVOID ANY MULTIPLY BY 0 PROBLEMS
 				int attributeFalseCount = 1;
-				
+
 			//generate the probabilities for the non spam instances instances
 			for(boolean[] eachInstance: notSpamInstances){
 				if(eachInstance[i]){
@@ -103,7 +103,7 @@ public static final String PATH_TO_TRAINING_INSTANCES = "data/spamLabelled.dat";
 			}
 			probabilityTable[i][0] = (double)attributeTrueCount/(double)notSpamInstances.size();//iActivatedNonSpam
 			probabilityTable[i][1] = (double)attributeFalseCount/(double)notSpamInstances.size();//iNotActivatedNonSpam
-			
+
 			//generate the probabilities for the spam instances
 			attributeTrueCount = 1;
 			attributeFalseCount = 1;
@@ -113,17 +113,17 @@ public static final String PATH_TO_TRAINING_INSTANCES = "data/spamLabelled.dat";
 				}else{
 					attributeFalseCount++;
 				}
-			}	
+			}
 			probabilityTable[i][2] = (double)attributeTrueCount/(double)spamInstances.size();//iActivatedSpam
 			probabilityTable[i][3] = (double)attributeFalseCount/(double)spamInstances.size();//iNotActivatedSpam
-			
-			
-			
+
+
+
 /*			System.out.println("the probability that " + i + " is activated given it is in the non spam class is: " + probabilityTable[i][0]);
 			System.out.println("the probability that " + i + " is notactivated given it is in the non spam class is: " + probabilityTable[i][1]);
 			System.out.println("the probability that " + i + " is activated given it is in the  spam class is: " + probabilityTable[i][2]);
 			System.out.println("the probability that " + i + " is not activated given it is in the  spam class is: " + probabilityTable[i][3]);*/
-			
+
 		}
 
 
