@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Main {
 
 public static final String PATH_TO_TRAINING_INSTANCES = "data/spamLabelled.dat";
+public static final String PATH_TO_TESTING_INSTANCES = "data/spamLabelled.dat";
 
 	public static void main(String[] args) throws IOException{
 		//first, load all of the training instances into array of arrays
@@ -30,6 +31,24 @@ public static final String PATH_TO_TRAINING_INSTANCES = "data/spamLabelled.dat";
 			//for each var in the testing instance, just look up the probability for that var being activated/not-activated for that class (we need to do both spam and not-spam separately) and then add that probability to the list of probabilities that we will multiply together (remember to add the probability of the class at the end too) Whichever class has the highest score wins.
 		boolean[] dummyInstance = {true, true, false, true, false, true, true, false, false, true, true, false};
 		System.out.println(classifyTestInstance(dummyInstance, probabilityTables, nonSpamProb, spamProb));
+		
+		//now we will do the testing haha
+		test(PATH_TO_TESTING_INSTANCES, probabilityTables, nonSpamProb, spamProb);
+	}
+
+	private static void test(String pathToTestingInstances, double[][] probTables, double nonSpamProb, double spamProb) throws IOException {
+		boolean[][] testingInstances = loadInstances(PATH_TO_TESTING_INSTANCES);
+		int classifiedCorrectlyCount = 0;
+		for(boolean[] eachInstance: testingInstances){
+			if(classifyTestInstance(eachInstance, probTables, nonSpamProb, spamProb).equals("spam") && eachInstance[12] || classifyTestInstance(eachInstance, probTables, nonSpamProb, spamProb).equals("nonspam") && !eachInstance[12]){
+				classifiedCorrectlyCount++;
+				System.out.println("hell fuk ye");
+			}else{
+				System.out.println("lol nah");
+			}
+		}
+		System.out.println("after testing, we classified a total of: " + classifiedCorrectlyCount + " instances correctly : )");
+		
 	}
 
 	//returns the name of the class that the supplied instance seems to belong to
@@ -37,34 +56,42 @@ public static final String PATH_TO_TRAINING_INSTANCES = "data/spamLabelled.dat";
 
 		//first find the probScore that it is not spam
 		double runningTotal = 1;
+		//System.out.println("\nNOW WORKING OUT THE PROB SCORE FOR NON SPAM: \n");
 		for(int i = 0; i < 12; i++){
 			if(instance[i]){
 				runningTotal*=probTables[i][0];
-				System.out.println("asserted so multiplying by prob: " + probTables[i][0]);
+				//System.out.println("asserted so multiplying by prob: " + probTables[i][0] + " at index" + i);
 			}else{
 				runningTotal*=probTables[i][1];
-				System.out.println("not asserted so multiplying by prob: " + probTables[i][1]);
+			//	System.out.println("not asserted so multiplying by prob: " + probTables[i][1] + " at index" + i);
 			}
 		}
 
 		runningTotal *= nonSpamProb;
-		System.out.println("so the probability that this instance is not spam is: " + runningTotal);
+	//	System.out.println("so the probability that this instance is not spam is: " + runningTotal);
+		double nonSpamScore = runningTotal;
 
 		//now find probScore that it is spam haha
 		runningTotal = 1;
+		//System.out.println("\nNOW WORKING OUT THE PROB SCORE FOR SPAM: \n");
 		for(int i = 0; i < 12; i++){
 			if(instance[i]){
 				runningTotal*=probTables[i][2];
+		//		System.out.println("asserted so multiplying by prob: " + probTables[i][3] + " at index" + i);
 			}else{
 				runningTotal*=probTables[i][3];
+			//	System.out.println("asserted so multiplying by prob: " + probTables[i][3] + " at index" + i);
 			}
 		}
 		runningTotal *= spamProb;
-		System.out.println("so the probability that this instance is spam is: " + runningTotal);
-
-
-
-		return "ignant and wot";
+	//	System.out.println("so the probability that this instance is spam is: " + runningTotal);
+		double spamScore = runningTotal;
+		
+		if(spamScore >= nonSpamScore){
+			return "spam";
+		}else{
+			return "nonspam";
+		}
 	}
 
 	//key for the probability table that is returned indexes:
@@ -119,10 +146,10 @@ public static final String PATH_TO_TRAINING_INSTANCES = "data/spamLabelled.dat";
 
 
 
-/*			System.out.println("the probability that " + i + " is activated given it is in the non spam class is: " + probabilityTable[i][0]);
+			System.out.println("the probability that " + i + " is activated given it is in the non spam class is: " + probabilityTable[i][0]);
 			System.out.println("the probability that " + i + " is notactivated given it is in the non spam class is: " + probabilityTable[i][1]);
 			System.out.println("the probability that " + i + " is activated given it is in the  spam class is: " + probabilityTable[i][2]);
-			System.out.println("the probability that " + i + " is not activated given it is in the  spam class is: " + probabilityTable[i][3]);*/
+			System.out.println("the probability that " + i + " is not activated given it is in the  spam class is: " + probabilityTable[i][3]);
 
 		}
 
