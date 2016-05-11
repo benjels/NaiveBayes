@@ -16,8 +16,8 @@ public static final String PATH_TO_TESTING_INSTANCES = "data/spamLabelled.dat";
 		//now we have our instances, we can create all 12 of our little tables that we have for each of the instances.
 			double[][] probabilityTables = generateProbabilityTables(trainingInstances);//new double[12][4];
 		//now get the baseline kinda probabilities of spam vs not spam
-		int nonSpamCount = 0;
-		int spamCount = 0;
+		int nonSpamCount = 1;
+		int spamCount = 1;
 		for(boolean[] eachInstance: trainingInstances){
 			if(eachInstance[12]){
 				spamCount++;
@@ -25,13 +25,13 @@ public static final String PATH_TO_TESTING_INSTANCES = "data/spamLabelled.dat";
 				nonSpamCount++;
 			}
 		}
-		double nonSpamProb = (double)nonSpamCount/(double)trainingInstances.length;
-		double spamProb = (double)spamCount/(double)trainingInstances.length;
+		double nonSpamProb = (double)nonSpamCount/(double)(trainingInstances.length + 1);
+		double spamProb = (double)spamCount/(double)(trainingInstances.length + 1);
 		//now we are ready to do our classification on the testing set.
 			//for each var in the testing instance, just look up the probability for that var being activated/not-activated for that class (we need to do both spam and not-spam separately) and then add that probability to the list of probabilities that we will multiply together (remember to add the probability of the class at the end too) Whichever class has the highest score wins.
 		boolean[] dummyInstance = {true, true, false, true, false, true, true, false, false, true, true, false};
 		System.out.println(classifyTestInstance(dummyInstance, probabilityTables, nonSpamProb, spamProb));
-		
+
 		//now we will do the testing haha
 		test(PATH_TO_TESTING_INSTANCES, probabilityTables, nonSpamProb, spamProb);
 	}
@@ -47,8 +47,8 @@ public static final String PATH_TO_TESTING_INSTANCES = "data/spamLabelled.dat";
 				System.out.println("lol nah");
 			}
 		}
-		System.out.println("after testing, we classified a total of: " + classifiedCorrectlyCount + " instances correctly : )");
-		
+		System.out.println("after testing, we classified a total of: " + classifiedCorrectlyCount + "/200 training instances correctly : )");
+
 	}
 
 	//returns the name of the class that the supplied instance seems to belong to
@@ -86,7 +86,7 @@ public static final String PATH_TO_TESTING_INSTANCES = "data/spamLabelled.dat";
 		runningTotal *= spamProb;
 	//	System.out.println("so the probability that this instance is spam is: " + runningTotal);
 		double spamScore = runningTotal;
-		
+
 		if(spamScore >= nonSpamScore){
 			return "spam";
 		}else{
@@ -128,8 +128,8 @@ public static final String PATH_TO_TESTING_INSTANCES = "data/spamLabelled.dat";
 					attributeFalseCount++;
 				}
 			}
-			probabilityTable[i][0] = (double)attributeTrueCount/(double)notSpamInstances.size();//iActivatedNonSpam
-			probabilityTable[i][1] = (double)attributeFalseCount/(double)notSpamInstances.size();//iNotActivatedNonSpam
+			probabilityTable[i][0] = (double)attributeTrueCount/(double)(notSpamInstances.size() + 1);//iActivatedNonSpam
+			probabilityTable[i][1] = (double)attributeFalseCount/(double)(notSpamInstances.size() + 1);//iNotActivatedNonSpam
 
 			//generate the probabilities for the spam instances
 			attributeTrueCount = 1;
@@ -141,8 +141,8 @@ public static final String PATH_TO_TESTING_INSTANCES = "data/spamLabelled.dat";
 					attributeFalseCount++;
 				}
 			}
-			probabilityTable[i][2] = (double)attributeTrueCount/(double)spamInstances.size();//iActivatedSpam
-			probabilityTable[i][3] = (double)attributeFalseCount/(double)spamInstances.size();//iNotActivatedSpam
+			probabilityTable[i][2] = (double)attributeTrueCount/(double)(spamInstances.size() + 1);//iActivatedSpam
+			probabilityTable[i][3] = (double)attributeFalseCount/(double)(spamInstances.size() + 1);//iNotActivatedSpam
 
 
 
